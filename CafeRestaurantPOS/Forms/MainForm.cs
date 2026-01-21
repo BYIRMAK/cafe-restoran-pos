@@ -10,7 +10,36 @@ namespace CafeRestaurantPOS.Forms
         public MainForm()
         {
             InitializeComponent();
+            InitializeMenuBar();
             LoadDashboard();
+        }
+
+        private void InitializeMenuBar()
+        {
+            MenuStrip menuStrip = new MenuStrip();
+            menuStrip.BackColor = ColorTranslator.FromHtml("#2D2D30");
+            menuStrip.ForeColor = Color.White;
+            menuStrip.Dock = DockStyle.Top;
+            
+            // Yardım (Help) menu
+            ToolStripMenuItem mnuHelp = new ToolStripMenuItem("Yardım");
+            mnuHelp.ForeColor = Color.White;
+            
+            ToolStripMenuItem mnuAbout = new ToolStripMenuItem("Hakkında");
+            mnuAbout.ForeColor = Color.White;
+            mnuAbout.Click += (s, e) =>
+            {
+                using (AboutForm aboutForm = new AboutForm())
+                {
+                    aboutForm.ShowDialog(this);
+                }
+            };
+            
+            mnuHelp.DropDownItems.Add(mnuAbout);
+            menuStrip.Items.Add(mnuHelp);
+            
+            this.MainMenuStrip = menuStrip;
+            this.Controls.Add(menuStrip);
         }
 
         private void LoadDashboard()

@@ -1,0 +1,122 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  SOLUTION_PATH: CafeRestaurantPOS.sln
+  BUILD_CONFIGURATION: Release
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+    
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v1
+    
+    - name: Restore NuGet packages
+      run: nuget restore ${{ env.SOLUTION_PATH }}
+    
+    - name: Build Solution
+      run: msbuild ${{ env.SOLUTION_PATH }} /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform="Any CPU" /p:OutputPath=bin/Release
+    
+    - name: Create Release Package
+      run: |
+        mkdir release-package
+        mkdir release-package/MenuSoft-POS
+        mkdir release-package/MenuSoft-LicenseManager
+        
+        # Copy POS files
+        Copy-Item -Path "CafeRestaurantPOS/bin/Release/*" -Destination "release-package/MenuSoft-POS/" -Recurse -Force
+        
+        # Copy License Manager files
+        Copy-Item -Path "LicenseManager/bin/Release/*" -Destination "release-package/MenuSoft-LicenseManager/" -Recurse -Force
+        
+        # Create README
+        @"
+        ╔══════════════════════════════════════════════════════════════╗
+        ║          MENÜ SOFT - CAFE RESTORAN POS SİSTEMİ             ║
+        ╚══════════════════════════════════════════════════════════════╝
+        
+        📦 PAKET İÇERİĞİ:
+        
+        1️⃣  MenuSoft-POS/
+           └─ CafeRestaurantPOS.exe  (Ana Uygulama)
+        
+        2️⃣  MenuSoft-LicenseManager/
+           └─ LicenseManager.exe     (Lisans Yönetimi)
+        
+        ─────────────────────────────────────────────────────────────
+        
+        🚀 HIZLI BAŞLANGIÇ:
+        
+        ADIM 1: CafeRestaurantPOS.exe'yi çalıştırın
+        
+        ADIM 2: Lisans Aktivasyonu
+           • Cihaz ID'nizi kopyalayın
+           • 📞 0 552 165 04 35 numaralı telefonu arayın
+           • Cihaz ID'nizi iletin
+           • Aldığınız Ürün Kodu ve Lisans Numarasını girin
+        
+        ADIM 3: Giriş Yapın
+           Kullanıcı: admin
+           Şifre: admin123
+        
+        ─────────────────────────────────────────────────────────────
+        
+        📞 DESTEK VE LİSANS:
+        
+        Telefon: 0 552 165 04 35
+        Çalışma Saatleri: Hafta içi 09:00-18:00
+        
+        ─────────────────────────────────────────────────────────────
+        
+        ✨ ÖZELLİKLER:
+        
+        ✅ Modern, kullanıcı dostu arayüz
+        ✅ Offline çalışma (internet gerekmez)
+        ✅ Güvenli AES-256 şifreleme
+        ✅ Cihaz bazlı lisanslama
+        ✅ SQLite veritabanı
+        ✅ Otomatik yedekleme
+        
+        ─────────────────────────────────────────────────────────────
+        
+        © 2026 Menü Soft - Tüm hakları saklıdır.
+        
+        "@ | Out-File -FilePath "release-package/OKULIN.txt" -Encoding UTF8
+      shell: pwsh
+    
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: MenuSoft-POS-Complete
+        path: release-package/
+    
+    - name: Create ZIP files
+      run: |
+        Compress-Archive -Path "release-package/MenuSoft-POS/*" -DestinationPath "MenuSoft-POS.zip"
+        Compress-Archive -Path "release-package/MenuSoft-LicenseManager/*" -DestinationPath "MenuSoft-LicenseManager.zip"
+        Compress-Archive -Path "release-package/*" -DestinationPath "MenuSoft-Complete-Package.zip"
+      shell: pwsh
+    
+    - name: Upload ZIP Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ZIP-Packages
+        path: |
+          MenuSoft-POS.zip
+          MenuSoft-LicenseManager.zip
+          MenuSoft-Complete-Package.zip
