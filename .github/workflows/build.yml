@@ -1,0 +1,41 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build: 
+    runs-on: windows-2022
+    
+    steps:
+    - uses:  actions/checkout@v4
+    
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+    
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v2
+    
+    - name:  Restore packages
+      run: nuget restore CafeRestaurantPOS.sln
+    
+    - name: Build
+      run: msbuild CafeRestaurantPOS.sln /p:Configuration=Release /p:Platform="Any CPU"
+    
+    - name:  Package
+      run: |
+        if (Test-Path "CafeRestaurantPOS/bin/Release") {
+          Compress-Archive -Path "CafeRestaurantPOS/bin/Release/*" -DestinationPath "MenuSoft-POS. zip"
+        }
+        if (Test-Path "LicenseManager/bin/Release") {
+          Compress-Archive -Path "LicenseManager/bin/Release/*" -DestinationPath "MenuSoft-LicenseManager.zip"
+        }
+      shell: pwsh
+    
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name:  MenuSoft-Applications
+        path: "*. zip"
