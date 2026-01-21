@@ -22,7 +22,7 @@ jobs:
       run: nuget restore CafeRestaurantPOS.sln
     
     - name: Build Solution
-      run: msbuild CafeRestaurantPOS. sln /p:Configuration=Release /p:Platform="Any CPU" /p:DeployOnBuild=true /p: VisualStudioVersion=17.0
+     run: msbuild CafeRestaurantPOS. sln /p:Configuration=Release /p:Platform="Any CPU" /p:DeployOnBuild=true /p: VisualStudioVersion=17.0
     
     - name:  List Build Output
       run: |
