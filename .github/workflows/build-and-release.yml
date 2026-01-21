@@ -9,6 +9,9 @@ env:
   SOLUTION_PATH: CafeRestaurantPOS.sln
   BUILD_CONFIGURATION: Release
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: windows-latest
