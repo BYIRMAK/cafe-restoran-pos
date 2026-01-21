@@ -1,15 +1,16 @@
 name: Build and Release
 
 on:
-  push:
+  push: 
     branches: [ main ]
   workflow_dispatch:
 
-jobs:build: 
+jobs:
+  build: 
     runs-on: windows-2022
     
-    steps: 
-    - uses: actions/checkout@v4
+    steps:
+    - uses:  actions/checkout@v4
     
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
@@ -20,8 +21,8 @@ jobs:build:
     - name:  Restore NuGet Packages
       run: nuget restore CafeRestaurantPOS.sln
     
-    - name: Build Solution
-     run: msbuild CafeRestaurantPOS. sln /p:Configuration=Release /p:Platform="Any CPU" /p:DeployOnBuild=true /p: VisualStudioVersion=17.0
+    - name:  Build Solution
+      run: msbuild CafeRestaurantPOS. sln /p:Configuration=Release /p:Platform="Any CPU" /p:DeployOnBuild=true /p: VisualStudioVersion=17.0
     
     - name:  List Build Output
       run: |
