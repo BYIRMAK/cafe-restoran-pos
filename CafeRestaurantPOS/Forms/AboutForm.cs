@@ -23,7 +23,15 @@ namespace CafeRestaurantPOS.Forms
                     MessageBoxIcon.Information
                 );
             }
-            catch { }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Telefon numarası kopyalanamadı. Lütfen manuel olarak not edin:\n\n📞 0 552 165 04 35",
+                    "Bilgi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
         }
 
         private void btnClose_Click(object sender, EventArgs e)

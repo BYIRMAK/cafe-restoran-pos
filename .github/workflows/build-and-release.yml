@@ -15,7 +15,7 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.1
@@ -97,7 +97,7 @@ jobs:
       shell: pwsh
     
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MenuSoft-POS-Complete
         path: release-package/
@@ -110,7 +110,7 @@ jobs:
       shell: pwsh
     
     - name: Upload ZIP Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ZIP-Packages
         path: |
